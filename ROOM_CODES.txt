@@ -1,0 +1,143 @@
+╔══════════════════════════════════════════════════════════════════╗
+║              HOUSE MANAGEMENT SYSTEM - ROOM CODES                ║
+║                    Print and Share with Household                ║
+╚══════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────┐
+│ FLOOR 4                                                          │
+├─────────────────────────────────────────────────────────────────┤
+│  Room 13C    │    NU-4001      │  Toilet: Floor 4               │
+│  Room 14C    │    XI-4002      │  Kitchen: Upper (shared)       │
+│              │                 │  Shower: Upper (shared)        │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ FLOOR 3                                                          │
+├─────────────────────────────────────────────────────────────────┤
+│  Room 8C     │    THETA-3001   │  Toilet: Floor 3               │
+│  Room 9C     │    IOTA-3002    │  Kitchen: Upper (shared)       │
+│  Room 10C    │    KAPPA-3003   │  Shower: Upper (shared)        │
+│  Room 11C    │    LAMBDA-3004  │                                │
+│  Room 12C    │    MU-3005      │                                │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ FLOOR 2                                                          │
+├─────────────────────────────────────────────────────────────────┤
+│  Room 3C     │    GAMMA-2001   │  Toilet: Floor 2               │
+│  Room 4C     │    DELTA-2002   │  Kitchen: Lower (shared)       │
+│  Room 5C     │    EPSILON-2003 │  Shower: Lower (shared)        │
+│  Room 6C     │    ZETA-2004    │                                │
+│  Room 7C     │    ETA-2005     │                                │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ FLOOR 1                                                          │
+├─────────────────────────────────────────────────────────────────┤
+│  Room 1C     │    ALPHA-1001   │  Toilet: Floor 1               │
+│  Room 2C     │    BETA-1002    │  Kitchen: Lower (shared)       │
+│              │                 │  Shower: Lower (shared)        │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ GROUND FLOOR (Floor 0)                                           │
+├─────────────────────────────────────────────────────────────────┤
+│  Laundry Room                   │  Toilet: Ground Floor          │
+│  • Washing Machine              │  • All residents               │
+│  • Dryer                        │                                │
+└─────────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════╗
+║                      FACILITY ASSIGNMENTS                         ║
+╚══════════════════════════════════════════════════════════════════╝
+
+KITCHENS:
+  Lower Kitchen (Floors 1-2):
+    Rooms: 1C, 2C, 3C, 4C, 5C, 6C, 7C
+    Tasks: Trash, Cupboard, Stove (rotate weekly)
+
+  Upper Kitchen (Floors 3-4):
+    Rooms: 8C, 9C, 10C, 11C, 12C, 13C, 14C
+    Tasks: Trash, Cupboard, Stove (rotate weekly)
+
+SHOWERS:
+  Lower Shower (Floors 1-2):
+    Rooms: 1C, 2C, 3C, 4C, 5C, 6C, 7C
+    Task: Cleaning (rotate)
+
+  Upper Shower (Floors 3-4):
+    Rooms: 8C, 9C, 10C, 11C, 12C, 13C, 14C
+    Task: Cleaning (rotate)
+
+TOILETS:
+  Floor 0 (Ground): Shared by all (laundry area)
+  Floor 1: Rooms 1C, 2C
+  Floor 2: Rooms 3C, 4C, 5C, 6C, 7C
+  Floor 3: Rooms 8C, 9C, 10C, 11C, 12C
+  Floor 4: Rooms 13C, 14C
+
+LAUNDRY (Ground Floor):
+  All 14 rooms have access
+
+╔══════════════════════════════════════════════════════════════════╗
+║                      WASHING PROGRAMS                             ║
+╚══════════════════════════════════════════════════════════════════╝
+
+WASHING MACHINE:
+  • Quick Wash      - 30 minutes
+  • Normal          - 60 minutes
+  • Heavy Duty      - 90 minutes
+  • Delicate        - 45 minutes
+  • Eco Mode        - 120 minutes
+
+DRYER:
+  • Quick Dry       - 30 minutes
+  • Normal          - 60 minutes
+  • Heavy Load      - 90 minutes
+  • Delicate        - 40 minutes
+  • Air Dry         - 20 minutes
+
+╔══════════════════════════════════════════════════════════════════╗
+║                         HOW TO USE                                ║
+╚══════════════════════════════════════════════════════════════════╝
+
+1. FIRST TIME:
+   • Open the website
+   • Enter your room code (e.g., ALPHA-1001)
+   • Explore the dashboard!
+
+2. LAUNDRY:
+   • Check if machine is free
+   • Select a program
+   • If busy, join the queue
+   • You'll be notified (check the app)
+
+3. TASKS:
+   • Check if it's your turn (purple highlight)
+   • Complete the task
+   • Mark as done
+   • System auto-rotates to next room
+
+4. PRESENCE:
+   • Mark yourself Home/Away
+   • See who's in the house
+   • Update anytime
+
+╔══════════════════════════════════════════════════════════════════╗
+║                         IMPORTANT NOTES                           ║
+╚══════════════════════════════════════════════════════════════════╝
+
+✓ Keep your room code private
+✓ Check laundry queue before starting
+✓ Mark tasks as done promptly
+✓ Update presence status regularly
+✓ Be respectful of shared spaces
+✓ Report any issues immediately
+
+Website: [YOUR_DEPLOYED_URL_HERE]
+
+Questions? Contact: [YOUR_CONTACT_HERE]
+
+═══════════════════════════════════════════════════════════════════
+           Generated by House Management System v1.0
+═══════════════════════════════════════════════════════════════════

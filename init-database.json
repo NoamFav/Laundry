@@ -1,0 +1,98 @@
+{
+  "laundry": {
+    "washingMachine": {
+      "status": "idle",
+      "program": null,
+      "startTime": null,
+      "endTime": null,
+      "currentUser": null,
+      "queue": []
+    },
+    "dryer": {
+      "status": "idle",
+      "program": null,
+      "startTime": null,
+      "endTime": null,
+      "currentUser": null,
+      "queue": []
+    }
+  },
+  "tasks": {
+    "kitchens": {
+      "lower": {
+        "trash": {
+          "currentRoom": "1C",
+          "lastCompleted": null,
+          "nextDue": null
+        },
+        "cupboard": {
+          "currentRoom": "1C",
+          "lastCompleted": null,
+          "nextDue": null
+        },
+        "stove": {
+          "currentRoom": "1C",
+          "lastCompleted": null,
+          "nextDue": null
+        }
+      },
+      "upper": {
+        "trash": {
+          "currentRoom": "8C",
+          "lastCompleted": null,
+          "nextDue": null
+        },
+        "cupboard": {
+          "currentRoom": "8C",
+          "lastCompleted": null,
+          "nextDue": null
+        },
+        "stove": {
+          "currentRoom": "8C",
+          "lastCompleted": null,
+          "nextDue": null
+        }
+      }
+    },
+    "showers": {
+      "lower": {
+        "currentRoom": "1C",
+        "lastCleaned": null,
+        "nextDue": null
+      },
+      "upper": {
+        "currentRoom": "8C",
+        "lastCleaned": null,
+        "nextDue": null
+      }
+    },
+    "toilets": {
+      "floor0": {
+        "paperStatus": "full",
+        "lastChecked": null,
+        "currentRoom": null
+      },
+      "floor1": {
+        "paperStatus": "full",
+        "lastChecked": null,
+        "currentRoom": "1C"
+      },
+      "floor2": {
+        "paperStatus": "full",
+        "lastChecked": null,
+        "currentRoom": "3C"
+      },
+      "floor3": {
+        "paperStatus": "full",
+        "lastChecked": null,
+        "currentRoom": "8C"
+      },
+      "floor4": {
+        "paperStatus": "full",
+        "lastChecked": null,
+        "currentRoom": "13C"
+      }
+    }
+  },
+  "presence": {}
+}
