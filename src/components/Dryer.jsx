@@ -235,27 +235,6 @@ export default function Dryer({
                     )}
                 </div>
             </motion.div>
-
-            {/* Queue indicator */}
-            {queue && queue.length > 0 && (
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 bg-white rounded-lg p-3 shadow-lg"
-                >
-                    <div className="text-sm font-semibold text-gray-700 mb-2">
-                        Queue ({queue.length})
-                    </div>
-                    {queue.slice(0, 3).map((item, index) => (
-                        <div
-                            key={index}
-                            className="text-xs text-gray-600 py-1 border-b last:border-b-0"
-                        >
-                            {index + 1}. {item.roomId} - {item.program}
-                        </div>
-                    ))}
-                </motion.div>
-            )}
         </div>
     );
 }
