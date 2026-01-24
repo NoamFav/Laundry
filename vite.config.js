@@ -6,5 +6,5 @@ export default defineConfig({
     plugins: [react()],
     // Set base to your repo name for GitHub Pages
     // Change 'Laundry' to your actual repository name
-    base: process.env.NODE_ENV === 'production' ? '/Laundry/' : '/',
+    base: process.env.NODE_ENV === "production" ? "/Laundry/" : "/",
 });
