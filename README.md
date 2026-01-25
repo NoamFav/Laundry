@@ -12,11 +12,12 @@ A comprehensive web application for managing a shared household with 14 rooms ac
 - **Real-time Status**: See current user and remaining time
 
 ### 🏠 3D House Visualization
-- Interactive 3D model of the house using Three.js
+- Realistic 3D building model with brick walls and slanted roof
+- Lit windows showing room occupancy (yellow = home, dark = away)
+- Interactive camera controls (rotate, zoom, pan)
 - 4 floors with 14 rooms total
-- Visual indicators for room occupancy
-- Clickable rooms for details
-- Facility markers (kitchens, showers, laundry)
+- Dormer windows for top floor rooms
+- Real-time lighting effects based on presence data
 
 ### 📋 Task Management
 - **Kitchen Tasks**: Trash, cupboard, and stove cleaning rotation
