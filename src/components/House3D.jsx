@@ -1,259 +1,250 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import { useState } from 'react';
-import * as THREE from 'three';
 
-// Brick texture color
-const BRICK_COLOR = '#b84848';
-const DARK_BRICK = '#1a1a1a';
-const WINDOW_COLOR = '#ffffff';
-const ROOF_COLOR = '#4a5568';
+// Colors matching your house
+const BRICK_COLOR = '#b84848'; // Red brick
+const DARK_BRICK = '#2c1810'; // Dark base
+const ROOF_COLOR = '#2d3748'; // Dark gray roof
+const WINDOW_FRAME = '#e8e8e8'; // White frames
+const LIGHT_ON = '#fff4b8'; // Warm yellow light
+const LIGHT_OFF = '#1a3a52'; // Dark blue (off)
 
-// Individual room component
-function RoomBox({ position, roomId, isOccupied, onClick, size = [0.9, 0.7, 0.8] }) {
+// Window component with light
+function Window({ position, isLit, roomId }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <group position={position}>
-      <mesh
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        onClick={() => onClick(roomId)}
-      >
-        <boxGeometry args={size} />
+      {/* Window frame */}
+      <mesh>
+        <boxGeometry args={[0.35, 0.45, 0.05]} />
+        <meshStandardMaterial color={WINDOW_FRAME} />
+      </mesh>
+
+      {/* Window glass with light */}
+      <mesh position={[0, 0, 0.03]}>
+        <planeGeometry args={[0.3, 0.4]} />
         <meshStandardMaterial
-          color={hovered ? '#60a5fa' : isOccupied ? '#4ade80' : BRICK_COLOR}
-          roughness={0.7}
+          color={isLit ? LIGHT_ON : LIGHT_OFF}
+          emissive={isLit ? LIGHT_ON : LIGHT_OFF}
+          emissiveIntensity={isLit ? 0.8 : 0.1}
         />
       </mesh>
 
-      {/* Window */}
-      <mesh position={[0, 0, size[2] / 2 + 0.01]}>
-        <planeGeometry args={[0.3, 0.25]} />
-        <meshStandardMaterial color={WINDOW_COLOR} emissive="#87ceeb" emissiveIntensity={0.2} />
-      </mesh>
-
       {/* Room label */}
-      <Text
-        position={[0, -size[1] / 2 - 0.15, size[2] / 2 + 0.01]}
-        fontSize={0.12}
-        color="#1f2937"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {roomId}
-      </Text>
-    </group>
-  );
-}
+      {roomId && (
+        <Text
+          position={[0, -0.3, 0.03]}
+          fontSize={0.08}
+          color="#000"
+          anchorX="center"
+          anchorY="middle"
+        >
+          {roomId}
+        </Text>
+      )}
 
-// Kitchen/Bathroom facility
-function FacilityBox({ position, label, color, type }) {
-  return (
-    <group position={position}>
-      <mesh>
-        <boxGeometry args={[0.9, 0.7, 0.8]} />
-        <meshStandardMaterial color={color} roughness={0.7} />
-      </mesh>
-
-      {/* Icon window */}
-      <mesh position={[0, 0, 0.41]}>
-        <planeGeometry args={[0.35, 0.3]} />
-        <meshStandardMaterial color={WINDOW_COLOR} emissive="#fbbf24" emissiveIntensity={0.3} />
-      </mesh>
-
-      <Text
-        position={[0, -0.5, 0.41]}
-        fontSize={0.08}
-        color="#1f2937"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {label}
-      </Text>
+      {/* Light glow effect */}
+      {isLit && (
+        <pointLight position={[0, 0, 0.5]} intensity={0.5} distance={2} color={LIGHT_ON} />
+      )}
     </group>
   );
 }
 
 // Main house structure
-function HouseStructure({ occupancy, onRoomClick }) {
-  // Room layout based on your photos
-  const layout = {
-    floor1: {
-      front: ['1C', '2C'], // 2 rooms on street side
-      back: [] // No rooms, facilities only
-    },
-    floor2: {
-      front: ['3C', '4C', '5C'], // 3 rooms on street side
-      back: ['6C', '7C'] // 2 rooms on back side
-    },
-    floor3: {
-      front: ['8C', '9C', '10C'], // 3 rooms on street side
-      back: ['11C', '12C'] // 2 rooms on back side
-    },
-    floor4: {
-      front: ['13C', '14C'], // 2 rooms on street side (under dormers)
-      back: [] // No rooms, facilities only
-    }
-  };
+function RealisticHouse({ occupancy }) {
+  // Define window positions based on your house layout
+  const windows = {
+    // Floor 1 - Front (2 rooms)
+    floor1Front: [
+      { pos: [-0.8, 0.3, 1.51], room: '1C', occupied: occupancy['1C'] },
+      { pos: [0.8, 0.3, 1.51], room: '2C', occupied: occupancy['2C'] }
+    ],
 
-  const renderFloorRooms = (floorNumber, rooms, yPos, isFront = true) => {
-    const spacing = 1.1;
-    const depth = isFront ? 1.2 : -1.2;
-    const roomCount = rooms.length;
-    const startX = -(roomCount - 1) * spacing / 2;
+    // Floor 2 - Front (3 rooms)
+    floor2Front: [
+      { pos: [-1.2, 1.2, 1.51], room: '3C', occupied: occupancy['3C'] },
+      { pos: [0, 1.2, 1.51], room: '4C', occupied: occupancy['4C'] },
+      { pos: [1.2, 1.2, 1.51], room: '5C', occupied: occupancy['5C'] }
+    ],
 
-    return rooms.map((roomId, index) => (
-      <RoomBox
-        key={roomId}
-        position={[startX + index * spacing, yPos, depth]}
-        roomId={roomId}
-        isOccupied={occupancy[roomId]}
-        onClick={onRoomClick}
-      />
-    ));
+    // Floor 2 - Back (2 rooms)
+    floor2Back: [
+      { pos: [-0.6, 1.2, -1.51], room: '6C', occupied: occupancy['6C'] },
+      { pos: [0.6, 1.2, -1.51], room: '7C', occupied: occupancy['7C'] }
+    ],
+
+    // Floor 3 - Front (3 rooms)
+    floor3Front: [
+      { pos: [-1.2, 2.1, 1.51], room: '8C', occupied: occupancy['8C'] },
+      { pos: [0, 2.1, 1.51], room: '9C', occupied: occupancy['9C'] },
+      { pos: [1.2, 2.1, 1.51], room: '10C', occupied: occupancy['10C'] }
+    ],
+
+    // Floor 3 - Back (2 rooms)
+    floor3Back: [
+      { pos: [-0.6, 2.1, -1.51], room: '11C', occupied: occupancy['11C'] },
+      { pos: [0.6, 2.1, -1.51], room: '12C', occupied: occupancy['12C'] }
+    ],
+
+    // Floor 4 - Front (2 rooms under dormers)
+    floor4Front: [
+      { pos: [-0.8, 3.0, 1.51], room: '13C', occupied: occupancy['13C'] },
+      { pos: [0.8, 3.0, 1.51], room: '14C', occupied: occupancy['14C'] }
+    ]
   };
 
   return (
-    <group>
-      {/* Ground floor - Laundry */}
-      <group position={[0, -1, 0]}>
-        {/* Ground floor base */}
-        <mesh position={[0, -0.4, 0]}>
-          <boxGeometry args={[4.5, 0.15, 3]} />
-          <meshStandardMaterial color={DARK_BRICK} />
+    <group position={[0, 0, 0]}>
+      {/* Ground floor / Base */}
+      <mesh position={[0, -0.3, 0]}>
+        <boxGeometry args={[3.5, 0.5, 3]} />
+        <meshStandardMaterial color={DARK_BRICK} roughness={0.9} />
+      </mesh>
+
+      {/* Main building walls */}
+      {/* Front wall */}
+      <mesh position={[0, 1.5, 1.5]}>
+        <boxGeometry args={[3.5, 3.5, 0.15]} />
+        <meshStandardMaterial color={BRICK_COLOR} roughness={0.8} />
+      </mesh>
+
+      {/* Back wall */}
+      <mesh position={[0, 1.5, -1.5]}>
+        <boxGeometry args={[3.5, 3.5, 0.15]} />
+        <meshStandardMaterial color={BRICK_COLOR} roughness={0.8} />
+      </mesh>
+
+      {/* Left wall */}
+      <mesh position={[-1.75, 1.5, 0]}>
+        <boxGeometry args={[0.15, 3.5, 3]} />
+        <meshStandardMaterial color={BRICK_COLOR} roughness={0.8} />
+      </mesh>
+
+      {/* Right wall */}
+      <mesh position={[1.75, 1.5, 0]}>
+        <boxGeometry args={[0.15, 3.5, 3]} />
+        <meshStandardMaterial color={BRICK_COLOR} roughness={0.8} />
+      </mesh>
+
+      {/* Floor separators (horizontal lines) */}
+      <mesh position={[0, 0.8, 1.52]}>
+        <boxGeometry args={[3.5, 0.08, 0.05]} />
+        <meshStandardMaterial color={WINDOW_FRAME} />
+      </mesh>
+      <mesh position={[0, 1.7, 1.52]}>
+        <boxGeometry args={[3.5, 0.08, 0.05]} />
+        <meshStandardMaterial color={WINDOW_FRAME} />
+      </mesh>
+      <mesh position={[0, 2.6, 1.52]}>
+        <boxGeometry args={[3.5, 0.08, 0.05]} />
+        <meshStandardMaterial color={WINDOW_FRAME} />
+      </mesh>
+
+      {/* Roof structure */}
+      <group position={[0, 3.4, 0]}>
+        {/* Main roof - slanted */}
+        <mesh rotation={[0, 0, Math.PI / 8]} position={[-0.4, 0.3, 0]}>
+          <boxGeometry args={[2.8, 0.1, 3.2]} />
+          <meshStandardMaterial color={ROOF_COLOR} roughness={0.6} />
+        </mesh>
+        <mesh rotation={[0, 0, -Math.PI / 8]} position={[0.4, 0.3, 0]}>
+          <boxGeometry args={[2.8, 0.1, 3.2]} />
+          <meshStandardMaterial color={ROOF_COLOR} roughness={0.6} />
         </mesh>
 
-        {/* Laundry markers */}
-        <mesh position={[-0.8, 0, 0]}>
-          <sphereGeometry args={[0.12, 16, 16]} />
-          <meshStandardMaterial color="#3b82f6" emissive="#3b82f6" emissiveIntensity={0.4} />
-        </mesh>
-        <Text position={[-0.8, -0.25, 0]} fontSize={0.09} color="#fff">Washer</Text>
+        {/* Dormer 1 (left) */}
+        <group position={[-0.7, 0.2, 1.2]}>
+          <mesh>
+            <boxGeometry args={[0.5, 0.5, 0.3]} />
+            <meshStandardMaterial color={WINDOW_FRAME} />
+          </mesh>
+          <mesh position={[0, 0, 0.16]}>
+            <planeGeometry args={[0.4, 0.4]} />
+            <meshStandardMaterial
+              color={occupancy['13C'] ? LIGHT_ON : LIGHT_OFF}
+              emissive={occupancy['13C'] ? LIGHT_ON : LIGHT_OFF}
+              emissiveIntensity={occupancy['13C'] ? 0.7 : 0.1}
+            />
+          </mesh>
+          {/* Dormer roof */}
+          <mesh rotation={[0, 0, Math.PI / 6]} position={[-0.15, 0.35, 0]}>
+            <boxGeometry args={[0.4, 0.05, 0.35]} />
+            <meshStandardMaterial color={ROOF_COLOR} />
+          </mesh>
+          <mesh rotation={[0, 0, -Math.PI / 6]} position={[0.15, 0.35, 0]}>
+            <boxGeometry args={[0.4, 0.05, 0.35]} />
+            <meshStandardMaterial color={ROOF_COLOR} />
+          </mesh>
+        </group>
 
-        <mesh position={[0.8, 0, 0]}>
-          <sphereGeometry args={[0.12, 16, 16]} />
-          <meshStandardMaterial color="#f97316" emissive="#f97316" emissiveIntensity={0.4} />
-        </mesh>
-        <Text position={[0.8, -0.25, 0]} fontSize={0.09} color="#fff">Dryer</Text>
+        {/* Dormer 2 (right) */}
+        <group position={[0.7, 0.2, 1.2]}>
+          <mesh>
+            <boxGeometry args={[0.5, 0.5, 0.3]} />
+            <meshStandardMaterial color={WINDOW_FRAME} />
+          </mesh>
+          <mesh position={[0, 0, 0.16]}>
+            <planeGeometry args={[0.4, 0.4]} />
+            <meshStandardMaterial
+              color={occupancy['14C'] ? LIGHT_ON : LIGHT_OFF}
+              emissive={occupancy['14C'] ? LIGHT_ON : LIGHT_OFF}
+              emissiveIntensity={occupancy['14C'] ? 0.7 : 0.1}
+            />
+          </mesh>
+          {/* Dormer roof */}
+          <mesh rotation={[0, 0, Math.PI / 6]} position={[-0.15, 0.35, 0]}>
+            <boxGeometry args={[0.4, 0.05, 0.35]} />
+            <meshStandardMaterial color={ROOF_COLOR} />
+          </mesh>
+          <mesh rotation={[0, 0, -Math.PI / 6]} position={[0.15, 0.35, 0]}>
+            <boxGeometry args={[0.4, 0.05, 0.35]} />
+            <meshStandardMaterial color={ROOF_COLOR} />
+          </mesh>
+        </group>
       </group>
 
-      {/* Floor 1 */}
-      <group position={[0, 0, 0]}>
-        {/* Floor platform */}
-        <mesh position={[0, -0.4, 0]}>
-          <boxGeometry args={[4.5, 0.1, 3]} />
-          <meshStandardMaterial color={BRICK_COLOR} />
-        </mesh>
-
-        {/* Front rooms (2) */}
-        {renderFloorRooms(1, layout.floor1.front, 0, true)}
-
-        {/* Back - Kitchen (lower) */}
-        <FacilityBox
-          position={[-0.5, 0, -1.2]}
-          label="Kitchen L"
-          color="#10b981"
-          type="kitchen"
+      {/* Render all windows */}
+      {Object.values(windows).flat().map((window, index) => (
+        <Window
+          key={index}
+          position={window.pos}
+          isLit={window.occupied}
+          roomId={window.room}
         />
+      ))}
+
+      {/* Ground floor - Laundry area (glass doors visible) */}
+      <group position={[0, -0.05, -1.52]}>
+        <mesh>
+          <planeGeometry args={[1.2, 0.6]} />
+          <meshStandardMaterial
+            color="#a0c4d8"
+            transparent
+            opacity={0.6}
+            emissive="#87ceeb"
+            emissiveIntensity={0.2}
+          />
+        </mesh>
+        <Text position={[0, -0.4, 0]} fontSize={0.1} color="#fff">
+          Laundry
+        </Text>
       </group>
 
-      {/* Floor 2 */}
-      <group position={[0, 0.9, 0]}>
-        <mesh position={[0, -0.4, 0]}>
-          <boxGeometry args={[4.5, 0.1, 3]} />
-          <meshStandardMaterial color={BRICK_COLOR} />
-        </mesh>
+      {/* Kitchen markers (back side) */}
+      <Text position={[-0.8, 0.3, -1.6]} fontSize={0.08} color="#fff">
+        Kitchen L
+      </Text>
+      <Text position={[-0.8, 3.0, -1.6]} fontSize={0.08} color="#fff">
+        Kitchen U
+      </Text>
 
-        {/* Front rooms (3) */}
-        {renderFloorRooms(2, layout.floor2.front, 0, true)}
-
-        {/* Back rooms (2) */}
-        {renderFloorRooms(2, layout.floor2.back, 0, false)}
-
-        {/* Shower marker */}
-        <mesh position={[0.8, 0, -1.2]}>
-          <sphereGeometry args={[0.1, 16, 16]} />
-          <meshStandardMaterial color="#06b6d4" emissive="#06b6d4" emissiveIntensity={0.4} />
-        </mesh>
-        <Text position={[0.8, -0.3, -1.2]} fontSize={0.07} color="#1f2937">Shower L</Text>
-      </group>
-
-      {/* Floor 3 */}
-      <group position={[0, 1.8, 0]}>
-        <mesh position={[0, -0.4, 0]}>
-          <boxGeometry args={[4.5, 0.1, 3]} />
-          <meshStandardMaterial color={BRICK_COLOR} />
-        </mesh>
-
-        {/* Front rooms (3) */}
-        {renderFloorRooms(3, layout.floor3.front, 0, true)}
-
-        {/* Back rooms (2) */}
-        {renderFloorRooms(3, layout.floor3.back, 0, false)}
-
-        {/* Shower marker */}
-        <mesh position={[0.8, 0, -1.2]}>
-          <sphereGeometry args={[0.1, 16, 16]} />
-          <meshStandardMaterial color="#06b6d4" emissive="#06b6d4" emissiveIntensity={0.4} />
-        </mesh>
-        <Text position={[0.8, -0.3, -1.2]} fontSize={0.07} color="#1f2937">Shower L</Text>
-      </group>
-
-      {/* Floor 4 */}
-      <group position={[0, 2.7, 0]}>
-        <mesh position={[0, -0.4, 0]}>
-          <boxGeometry args={[4.5, 0.1, 3]} />
-          <meshStandardMaterial color={BRICK_COLOR} />
-        </mesh>
-
-        {/* Front rooms (2) - under dormers */}
-        {renderFloorRooms(4, layout.floor4.front, 0, true)}
-
-        {/* Back - Kitchen (upper) */}
-        <FacilityBox
-          position={[-0.5, 0, -1.2]}
-          label="Kitchen U"
-          color="#10b981"
-          type="kitchen"
-        />
-
-        {/* Shower marker */}
-        <mesh position={[0.8, 0, -1.2]}>
-          <sphereGeometry args={[0.1, 16, 16]} />
-          <meshStandardMaterial color="#06b6d4" emissive="#06b6d4" emissiveIntensity={0.4} />
-        </mesh>
-        <Text position={[0.8, -0.3, -1.2]} fontSize={0.07} color="#1f2937">Shower U</Text>
-      </group>
-
-      {/* Roof with dormers */}
-      <group position={[0, 3.5, 0]}>
-        {/* Main roof */}
-        <mesh rotation={[0, 0, 0]}>
-          <boxGeometry args={[4.5, 0.2, 3.2]} />
-          <meshStandardMaterial color={ROOF_COLOR} />
-        </mesh>
-
-        {/* Dormer windows */}
-        <mesh position={[-0.5, 0.3, 1.3]}>
-          <boxGeometry args={[0.6, 0.4, 0.3]} />
-          <meshStandardMaterial color={WINDOW_COLOR} />
-        </mesh>
-        <mesh position={[0.5, 0.3, 1.3]}>
-          <boxGeometry args={[0.6, 0.4, 0.3]} />
-          <meshStandardMaterial color={WINDOW_COLOR} />
-        </mesh>
-      </group>
-
-      {/* Building outline/structure */}
-      <mesh position={[0, 1.2, 0]}>
-        <boxGeometry args={[4.6, 4.2, 3.1]} />
-        <meshStandardMaterial
-          color={BRICK_COLOR}
-          transparent
-          opacity={0.15}
-          wireframe
-        />
+      {/* Ground plane (pavement/garden) */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.6, 0]}>
+        <planeGeometry args={[8, 8]} />
+        <meshStandardMaterial color="#7ca982" roughness={0.9} />
       </mesh>
     </group>
   );
@@ -261,79 +252,62 @@ function HouseStructure({ occupancy, onRoomClick }) {
 
 export default function House3D({ occupancy = {}, onRoomClick }) {
   return (
-    <div className="w-full h-[600px] bg-gradient-to-br from-sky-100 to-blue-200 rounded-2xl overflow-hidden shadow-xl relative">
-      <Canvas camera={{ position: [6, 4, 8], fov: 50 }}>
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
-        <directionalLight position={[-10, 5, -5]} intensity={0.4} />
-        <pointLight position={[0, 8, 0]} intensity={0.5} />
+    <div className="w-full h-[600px] bg-gradient-to-br from-sky-200 via-blue-100 to-blue-50 rounded-2xl overflow-hidden shadow-2xl relative">
+      <Canvas camera={{ position: [5, 3, 6], fov: 50 }}>
+        {/* Lighting for realistic effect */}
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={1.2} castShadow />
+        <directionalLight position={[-5, 5, -3]} intensity={0.4} />
+        <pointLight position={[0, 5, 0]} intensity={0.3} color="#fff4b8" />
 
-        <HouseStructure occupancy={occupancy} onRoomClick={onRoomClick} />
+        <RealisticHouse occupancy={occupancy} />
 
         <OrbitControls
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
-          minDistance={4}
-          maxDistance={15}
-          maxPolarAngle={Math.PI / 2}
+          minDistance={3}
+          maxDistance={12}
+          maxPolarAngle={Math.PI / 2.1}
         />
-
-        {/* Ground plane */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
-          <planeGeometry args={[20, 20]} />
-          <meshStandardMaterial color="#86efac" />
-        </mesh>
       </Canvas>
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur rounded-xl p-4 text-xs space-y-2 shadow-lg">
-        <div className="font-semibold text-gray-800 mb-2">Legend</div>
+      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur rounded-xl p-4 text-xs space-y-2 shadow-lg max-w-[200px]">
+        <div className="font-semibold text-gray-800 mb-2">💡 How it works</div>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-green-400 rounded"></div>
-          <span>Occupied</span>
+          <div className="w-4 h-4 rounded" style={{ backgroundColor: LIGHT_ON }}></div>
+          <span className="text-gray-700">Light ON = Home</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded" style={{ backgroundColor: BRICK_COLOR }}></div>
-          <span>Empty</span>
+          <div className="w-4 h-4 rounded" style={{ backgroundColor: LIGHT_OFF }}></div>
+          <span className="text-gray-700">Light OFF = Away</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-blue-400 rounded"></div>
-          <span>Hover/Click</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-blue-500 rounded-full"></div>
-          <span>Washer</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-orange-500 rounded-full"></div>
-          <span>Dryer</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-green-500 rounded"></div>
-          <span>Kitchen</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-cyan-500 rounded-full"></div>
-          <span>Shower</span>
+        <div className="text-xs text-gray-600 mt-2 pt-2 border-t">
+          Windows show room occupancy in real-time
         </div>
       </div>
 
-      {/* Floor labels */}
+      {/* Floor guide */}
       <div className="absolute top-4 right-4 bg-white/95 backdrop-blur rounded-xl p-3 text-xs space-y-1 shadow-lg">
-        <div className="font-semibold text-gray-800 mb-1">Floors</div>
-        <div className="text-gray-600">
-          <div>Floor 4: Rooms 13C-14C</div>
-          <div>Floor 3: Rooms 8C-12C</div>
-          <div>Floor 2: Rooms 3C-7C</div>
-          <div>Floor 1: Rooms 1C-2C</div>
+        <div className="font-semibold text-gray-800 mb-1">🏠 Floors</div>
+        <div className="text-gray-600 space-y-0.5">
+          <div>Top: 13C-14C (Dormers)</div>
+          <div>Floor 3: 8C-12C</div>
+          <div>Floor 2: 3C-7C</div>
+          <div>Floor 1: 1C-2C</div>
           <div>Ground: Laundry</div>
         </div>
       </div>
 
-      {/* Controls hint */}
-      <div className="absolute top-4 left-4 bg-blue-500/90 backdrop-blur rounded-lg px-3 py-2 text-white text-xs">
-        🖱️ Drag to rotate • Scroll to zoom • Click rooms
+      {/* Controls */}
+      <div className="absolute top-4 left-4 bg-gradient-to-r from-blue-500 to-purple-600 backdrop-blur rounded-lg px-4 py-2 text-white text-xs font-medium shadow-lg">
+        🖱️ Drag • Scroll to zoom • Explore your house
+      </div>
+
+      {/* Status bar */}
+      <div className="absolute bottom-4 right-4 bg-gradient-to-r from-green-500 to-green-600 backdrop-blur rounded-lg px-4 py-2 text-white text-xs font-semibold shadow-lg">
+        {Object.values(occupancy).filter(Boolean).length} / 14 Home
       </div>
     </div>
   );
