@@ -1,5 +1,5 @@
-import InteractiveHouse from "../components/InteractiveHouse";
+import InteractiveHouse3D from "../components/InteractiveHouse3D";
 
 export default function Dashboard() {
-    return <InteractiveHouse />;
+    return <InteractiveHouse3D />;
 }
