@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(iskra -h:*)",
+      "Bash(npm run build:*)",
+      "Bash(iskra pulse:*)",
+      "Bash(npm run deploy:*)"
+    ]
+  }
+}
